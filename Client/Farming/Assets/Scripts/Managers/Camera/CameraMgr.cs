@@ -55,9 +55,18 @@ public class CameraMgr : MonoBehaviour
         CameraUpAndDown.eulerAngles = Vector3.right * (Mathf.Clamp(CameraUpAndDown.eulerAngles.z, 30, 85));
     }
 
+    /// <summary>
+    /// 相机前后（缩放）
+    /// </summary>
+    /// <param name="type"></param>
     private void setCameraZoom(bool type)
     {
         CameraContainer.Translate(Vector3.forward * CameraSpeed.z * (type ? 1 : -1) * Time.deltaTime);
         CameraUpAndDown.position = Vector3.forward * (Mathf.Clamp(CameraUpAndDown.eulerAngles.z, CameraUpAndDown.eulerAngles.z - 5, CameraUpAndDown.eulerAngles.z + 5));
+    }
+
+    public void AutoLookAt(Vector3 pos)
+    {
+        CameraContainer.LookAt(pos);
     }
 }

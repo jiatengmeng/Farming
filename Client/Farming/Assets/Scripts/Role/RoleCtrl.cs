@@ -32,6 +32,7 @@ public class RoleCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         CurRoleFSMMgr = new RoleFSMMgr(this);
     }
 
@@ -43,6 +44,11 @@ public class RoleCtrl : MonoBehaviour
         if(CurRoleFSMMgr!=null)
         {
             CurRoleFSMMgr.OnUpdate();
+        }
+
+        if(CurRoleType == RoleType.MainPlayer)
+        {
+
         }
     }
     /// <summary>
@@ -88,4 +94,11 @@ public class RoleCtrl : MonoBehaviour
     }
 
     #endregion
+
+    private void CameraAutoFollow()
+    {
+        if (CameraMgr.Instance == null) return;
+        CameraMgr.Instance.transform.position = gameObject.transform.position;
+        CameraMgr.Instance.AutoLookAt(gameObject.transform.position);
+    }
 }
