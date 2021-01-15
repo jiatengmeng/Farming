@@ -37,6 +37,15 @@ public class CameraMgr : MonoBehaviour
             Instance = new CameraMgr();
         }
     }
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    public void Init()
+    {
+        CameraUpAndDown.transform.localEulerAngles = new Vector3(0, 0, Mathf.Clamp(CameraUpAndDown.transform.localEulerAngles.z, 30f, 85f));
+    }
+
     /// <summary>
     /// 相机左右旋转
     /// </summary>
