@@ -1,0 +1,142 @@
+class Notification:INotification
+public
+string:name
+object:body
+stirng:type
+
+public
+Notification(string name, object body = null, string type = null)
+string:ToString()
+
+class Observer:IObserver
+public
+Action<Notification>:NotifyMethod
+object:NotifyContext
+
+public
+Observer(Action<INotification> notifyMethod, object notifyContext)
+//执行对应的消息
+void:NotifyObserver(INotification Notification)
+bool:CompareNotifyContext(object obj)
+
+class Mediator : Notifier, IMediator, INotifier
+//中介层名称
+static string NAME = "Mediator"
+public
+string:MediatorName
+object:ViewComponent
+
+public
+Mediator(string mediatorName, object viewComponent = null)
+//关注的消息列表
+string[] ListNotificationInterests()
+//执行关注的消息列表触发时的回调
+void HandleNotification(INotification notification)
+//注册时执行
+void OnRegister()
+//注销后执行
+void OnRemove()
+
+自定义的子类Commond继承SimpleCommand或MacroCommand
+每次触发仅仅是实例化对应的Commond然后执行里面对应的Execute
+public class HomeToStoreCommond : SimpleCommand
+    {
+        public override void Execute(INotification notification)
+        {
+            base.Execute(notification);
+
+            GameObject canvasObj = GameObject.Find("Canvas");
+
+            GameObject tempStorePanel = ManagerFacade.Instance.LoadPrefab("StorePanel");
+            tempStorePanel.transform.SetParent(canvasObj.transform, false);
+            tempStorePanel.name = "StorePanel";
+            tempStorePanel.AddComponent<StorePanel>();
+
+
+            GameObject tempCurrencyPanel = ManagerFacade.Instance.LoadPrefab("CurrencyPanel");
+            tempCurrencyPanel.transform.SetParent(canvasObj.transform, false);
+            tempCurrencyPanel.name = "CurrencyPanel";
+            tempCurrencyPanel.AddComponent<CurrencyPanel>();
+
+        }
+    }
+
+Proxy
+这就相对来讲比较简单了，纯数据（金币、经验、全局配置等）都会继承Proxy作为自定义的子类
+里面的逻辑相对简单，仅仅是对数据的操作，不会有操作UI之类的逻辑
+public class Notifier : INotifier
+    {
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="notificationName">通知的名称</param>
+        /// <param name="body">此条通知所带的数据</param>
+        /// <param name="type">这条通知的类型</param>
+        public virtual void SendNotification(string notificationName, object body = null, string type = null)
+        {
+            Facade.SendNotification(notificationName, body, type);
+        }
+
+        protected IFacade Facade
+        {
+            get
+            {
+                return Patterns.Facade.Facade.GetInstance(() => new Facade.Facade());
+            }
+        }
+    }
+
+model:数据中心
+这是核心三个类中最简单的一个单例类，根据继承IModel接口我们知道，这个有：注册、注销、检索（查找），和判断是否含有四个功能
+
+在proxy中有一个并发字典ConcurrentDictionary，当注册时候会以对应的proxy的Name当做key（mediator同理），所以在写name的时候要保持唯一性。
+
+view:视图中心
+View 负责整个已经注册的IMediator的运转 也负责关注的消息关联起来的地方，除了常规的 注册 注销 检索和判断是否含有外，多了一下函数NotifyObservers RegisterObserver RemoveObserver
+
+public virtual void RegisterMediator(IMediator mediator)
+        {
+            //不允许重复注册，因为以中介名称为Key
+            if (mediatorMap.TryAdd(mediator.MediatorName, mediator))
+            {
+                // 获得此Mediator中 视图需要关注的消息列表
+                string[] interests = mediator.ListNotificationInterests();
+
+                // 判断是否有消息需要注册
+                if (interests.Length > 0)
+                {
+                    // 获取对应Mediator中HandleNotification函数的引用，实例化一个Observer
+                    IObserver observer = new Observer(mediator.HandleNotification, mediator);
+
+                    // 根据消息列表的长度创建对应数量的消息观察者
+                    for (int i = 0; i < interests.Length; i++)
+                    {
+                        RegisterObserver(interests[i], observer);
+                    }
+                }
+                // 注册对应Mediator后的回调
+                mediator.OnRegister();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
