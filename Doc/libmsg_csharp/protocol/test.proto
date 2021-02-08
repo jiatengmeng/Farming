@@ -1,0 +1,8 @@
+syntax = "proto2";
+package test;
+message DataPackage{
+    repeated double real_array = 1;     //实型数组
+    required int32 real_count = 2;      //实型数组大小
+    repeated int32 int_array = 3;       //整型数组
+    required int32 int_count =4;        //整型数组大小
+}

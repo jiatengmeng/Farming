@@ -1,0 +1,6 @@
+syntax = "proto2";
+package test;
+message testdata{
+    required int32 messageid = 1;
+	required string messageInfo = 2;
+}
