@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package config;
+
+option optimize_for = LITE_RUNTIME;
+
+message PlantPropertyCfgSet
+{
+	message PlantPropertyCfg
+	{
+        required int32 n_id = 1;
+        required string s_name = 2;
+
+	}
+	repeated PlantPropertyCfg plantpropertycfgs = 1;
+
+}

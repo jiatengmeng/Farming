@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+package config;
+
+option optimize_for = LITE_RUNTIME;
+
+message PlantCfgSet
+{
+	message PlantCfg
+	{
+        required int32 n_id = 1;
+        required string s_name = 2;
+        required int32 n_rarity = 3;
+        required string s_model = 4;
+        required int32 n_times = 5;
+        required int32 n_property = 6;
+        required string s_des = 7;
+
+	}
+	repeated PlantCfg plantcfgs = 1;
+
+}

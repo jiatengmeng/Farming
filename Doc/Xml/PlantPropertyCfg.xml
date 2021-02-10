@@ -1,0 +1,14 @@
+<ExData>
+  <Table Name="PlantPropertyCfg">
+    <Record n_id="1" s_name="金" />
+    <Record n_id="2" s_name="木" />
+    <Record n_id="3" s_name="水" />
+    <Record n_id="4" s_name="火" />
+    <Record n_id="5" s_name="土" />
+    <ColumnList>
+      <Column Name="n_id" DataType="1" />
+      <Column Name="s_name" DataType="2" />
+    </ColumnList>
+    <Attribute Name="l_crc_code" Value="637485695287024610" DataType="4" />
+  </Table>
+</ExData>

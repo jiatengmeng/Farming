@@ -187,7 +187,7 @@ public class PanelMgr : MonoBehaviour
     {
         SetPanelActive();
         XlsxToXmlPanel.SetActive(true);
-        panelStk.Push(xmlComparePanel);
+        panelStk.Push(XlsxToXmlPanel);
     }
 
     //返回按钮用于将之前显示的界面隐藏
