@@ -75,3 +75,11 @@ public enum ToAnimatorCondition
     ToAttack,
     CurState,
 }
+
+/// <summary>
+/// 游戏物体层级
+/// </summary>
+public enum LayerType
+{
+    Floor = 9,
+}

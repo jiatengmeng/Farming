@@ -17,5 +17,6 @@ message PlantSeedCfgSet
 
 	}
 	repeated PlantSeedCfg plantseedcfgs = 1;
+    required int64 l_crc_code = 2;
 
 }

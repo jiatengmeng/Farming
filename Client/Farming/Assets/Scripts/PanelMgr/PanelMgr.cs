@@ -69,6 +69,7 @@ public class PanelMgr : MonoBehaviour
         //string str = "&lt;font color=&apos;ui.grade_yellow&apos;&gt;{0}&lt;/font&gt; invites you to join &lt;font color=&apos;ui.grade_yellow&apos;&gt;{1}&lt;/font&gt;, do you join?";
         //Debug.Log(XmlHandler.XmlString(str, true));
         //Debug.Log(str);
+        FileHandler.Instance.XmlToBinary();
     }
     // Update is called once per frame
     void Update()

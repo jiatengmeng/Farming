@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class RoleCtrl : MonoBehaviour
 {
+    #region 测试用
+    private Vector3 addCubePos;
+    public GameObject cube;
+    public GameObject wheelPb;
+    private Dictionary<Vector3,GameObject> builtObj = new Dictionary<Vector3, GameObject>();
+    #endregion
     /// <summary>
     /// 动画
     /// </summary>
@@ -39,6 +45,12 @@ public class RoleCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            Rect rt = new Rect(0,0,Screen.width,Screen.height);
+            CameraMgr.Instance.CaptureCamera(Camera.main, rt);
+        }
+        //BuildObject();
         if (CurRoleAI == null) return;
         CurRoleAI.DoAI();
         if(CurRoleFSMMgr!=null)
@@ -100,5 +112,46 @@ public class RoleCtrl : MonoBehaviour
         if (CameraMgr.Instance == null) return;
         CameraMgr.Instance.transform.position = gameObject.transform.position;
         CameraMgr.Instance.AutoLookAt(gameObject.transform.position);
+    }
+
+    private void BuildObject()
+    {
+        if (GetMouseRayPoint(out addCubePos))
+        {
+            cube.transform.position = addCubePos;
+            if (Input.GetMouseButtonDown(0))
+            {
+                GameObject obj = Instantiate(wheelPb, addCubePos, wheelPb.transform.rotation);
+                builtObj.Add(addCubePos, obj);
+            }
+        }
+    }
+
+    bool GetMouseRayPoint(out Vector3 pos)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        if (Physics.Raycast(ray, out hitInfo,Mathf.Infinity,LayerMask.GetMask("Floor")))
+        {
+            pos = FromWorldPositionToCubePosition(hitInfo.point);
+            if (builtObj.ContainsKey(addCubePos))
+            {
+                pos = Vector3.zero;
+                Debug.Log("位置被占用");
+                return false;
+            }
+            return true;
+        }
+        pos = Vector3.zero;
+        return false;
+    }
+    public static Vector3 FromWorldPositionToCubePosition(Vector3 position)
+    {
+        Vector3 resut = Vector3.zero;
+        resut.x = (int)(position.x - 0.5f)+0.5f;
+        resut.y = (int)(position.y - 0.5f)+0.5f;
+        resut.z = (int)(position.z - 0.5f)+0.5f;
+        Debug.Log(resut);
+        return resut;
     }
 }

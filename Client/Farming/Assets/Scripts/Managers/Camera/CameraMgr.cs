@@ -78,4 +78,26 @@ public class CameraMgr : MonoBehaviour
     {
         CameraContainer.LookAt(pos);
     }
+
+    public Texture2D CaptureCamera(Camera camera,Rect rect)
+    {
+        RenderTexture rt = new RenderTexture((int)rect.width, (int)rect.height, 0);
+        camera.targetTexture = rt;
+        camera.Render();
+
+        RenderTexture.active = rt;
+        Texture2D screenShot = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGB24, false);
+        screenShot.ReadPixels(rect, 0, 0);
+        screenShot.Apply();
+
+        camera.targetTexture = null;
+        RenderTexture.active = null;
+        GameObject.Destroy(rt);
+
+        byte[] bytes = screenShot.EncodeToPNG();
+        string fileName = Application.dataPath + "/GameData/Picture/Screenshot.png";
+        System.IO.File.WriteAllBytes(fileName, bytes);
+        Debug.Log(string.Format("截屏成功: {0}", fileName));
+        return screenShot;
+    }
 }

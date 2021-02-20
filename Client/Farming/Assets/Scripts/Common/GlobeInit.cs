@@ -18,9 +18,15 @@ public class GlobeInit : MonoBehaviour
     [HideInInspector]
     public RoleCtrl CurPlayer;
 
+    /// <summary>
+    /// 当前资源路径
+    /// </summary>
+    [HideInInspector]
+    public string ObjPath;
     private void Awake()
     {
         Instance = this;
+        ObjPath = Application.dataPath;
         DontDestroyOnLoad(gameObject);
     }
 

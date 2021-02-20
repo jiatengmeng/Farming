@@ -18,5 +18,6 @@ message PlantCfgSet
 
 	}
 	repeated PlantCfg plantcfgs = 1;
+    required int64 l_crc_code = 2;
 
 }

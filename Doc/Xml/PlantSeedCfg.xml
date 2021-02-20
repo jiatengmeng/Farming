@@ -8,6 +8,6 @@
       <Column Name="s_des" DataType="2" />
       <Column Name="n_plantid" DataType="1" />
     </ColumnList>
-    <Attribute Name="l_crc_code" Value="637485695287323801" DataType="4" />
+    <Attribute Name="l_crc_code" Value="637493240014220999" DataType="4" />
   </Table>
 </ExData>

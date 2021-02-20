@@ -13,5 +13,6 @@ message PlantPropertyCfgSet
 
 	}
 	repeated PlantPropertyCfg plantpropertycfgs = 1;
+    required int64 l_crc_code = 2;
 
 }

@@ -9,6 +9,6 @@
       <Column Name="n_property" DataType="1" />
       <Column Name="s_des" DataType="2" />
     </ColumnList>
-    <Attribute Name="l_crc_code" Value="637485695286715422" DataType="4" />
+    <Attribute Name="l_crc_code" Value="637493240013662476" DataType="4" />
   </Table>
 </ExData>

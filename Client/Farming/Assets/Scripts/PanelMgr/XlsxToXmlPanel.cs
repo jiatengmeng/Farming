@@ -31,6 +31,7 @@ public class XlsxToXmlPanel : MonoBehaviour
     private bool tipDisplay = false;
     private string tip = "";
     Thread thread;
+    string objPath = "";
 
     private void Awake()
     {
@@ -92,6 +93,8 @@ public class XlsxToXmlPanel : MonoBehaviour
                 tipDisplay = false;
             })); thread.Start();
         });
+
+        objPath = Application.dataPath;
     }
 
     // Start is called before the first frame update
@@ -245,6 +248,8 @@ public class XlsxToXmlPanel : MonoBehaviour
                 }
             }
         }
+        #region proto创建
+        //proto创建
         StringBuilder protoContent = new StringBuilder(FileTemplate.Instance.protoTemplate);
         protoContent.Replace("${TABLE_NAME}", excelData.tableName+"Set");
         protoContent.Replace("${RECORD_NAME}", excelData.tableName);
@@ -260,13 +265,107 @@ public class XlsxToXmlPanel : MonoBehaviour
 
         index = 2;
         StringBuilder attributeList = new StringBuilder();
+        attributeList.AppendFormat("    required {0} {1} = {2};\n", "l_crc_code".GetDataType().GetDataTypeName(), "l_crc_code", index++);
         foreach (string key in excelData.artDic.Keys)
         {
             attributeList.AppendFormat("    required {0} {1} = {2};\n", key.GetDataType().GetDataTypeName(), key, index++);
         }
         protoContent.Replace("${ATTRIBUTE_LIST}", attributeList.ToString());
         File.WriteAllText(tf2InputField.text+"/"+excelData.tableName+".proto", protoContent.ToString());
+        #endregion
 
+        #region BinaryWriter创建
+        StringBuilder binaryWriterContent = new StringBuilder(FileTemplate.Instance.binaryFileWriter);
+        binaryWriterContent.Replace("${RECORD_NAME}", excelData.tableName);
+        string tablesName = excelData.tableName.ToUpper()[0] + excelData.tableName.ToLower().Substring(1);
+        Debug.Log(tablesName);
+        binaryWriterContent.Replace("${TABLE_NAME_FIRST_UPPER}", tablesName);
+
+        //属性
+        attributeList.Clear();
+        foreach (string key in excelData.artDic.Keys)
+        {
+            attributeList.Append("        {\n");
+            attributeList.AppendFormat("            if (attributeDic.ContainsKey(\"{0}\")\n", key);
+            attributeList.Append("            {\n");
+            switch(key.GetDataType())
+            {
+                //int
+                case "1":
+                    {
+                        attributeList.AppendFormat("            records.{0} = int32.Parse(attributeDic[\"{1}\"].Attributes[\"Value\"].Value);\n", EveryHeadCharUpper(key), key);
+                    }
+                    break;
+                //string
+                case "2":
+                    {
+                        attributeList.AppendFormat("            records.{0} = attributeDic[\"{1}\"].Attributes[\"Value\"].Value;\n", EveryHeadCharUpper(key), key);
+                    }
+                    break;
+                //float
+                case "3":
+                    {
+                        attributeList.AppendFormat("            records.{0} = float.Parse(attributeDic[\"{1}\"].Attributes[\"Value\"].Value);\n", EveryHeadCharUpper(key), key);
+                    }
+                    break;
+                //long
+                case "4":
+                    {
+                        attributeList.AppendFormat("            records.{0} = long.Parse(attributeDic[\"{1}\"].Attributes[\"Value\"].Value);\n", EveryHeadCharUpper(key), key);
+                    }
+                    break;
+                default:
+                    Debug.Log("错误类型"+key);
+                    break;
+
+            }
+            attributeList.Append("            }\n");
+            attributeList.Append("        }\n");
+        }
+        binaryWriterContent.Replace("${ATTRIBUTE_SETTER}", attributeList.ToString());
+
+        //内容
+        recordList.Clear();
+        foreach (int key in excelData.keyColDic.Keys)
+        {
+            switch (excelData.keyColDic[key].GetDataType())
+            {
+                //int
+                case "1":
+                    {
+                        recordList.AppendFormat("            record.{0} = node.Attributes[\"{1}\"].ToString().ToInt();\n", EveryHeadCharUpper(excelData.keyColDic[key]), excelData.keyColDic[key]);
+                    }
+                    break;
+                //string
+                case "2":
+                    {
+                        recordList.AppendFormat("            record.{0} = node.Attributes[\"{1}\"].ToString();\n", EveryHeadCharUpper(excelData.keyColDic[key]), excelData.keyColDic[key]);
+                    }
+                    break;
+                //float
+                case "3":
+                    {
+                        recordList.AppendFormat("            record.{0} = float.Parse(node.Attributes[\"{1}\"].ToString());\n", EveryHeadCharUpper(excelData.keyColDic[key]), excelData.keyColDic[key]);
+                    }
+                    break;
+                //long
+                case "4":
+                    {
+                        recordList.AppendFormat("            record.{0} = long.Parse(node.Attributes[\"{1}\"].ToString());\n", EveryHeadCharUpper(excelData.keyColDic[key]), excelData.keyColDic[key]);
+                    }
+                    break;
+                default:
+                    Debug.Log("错误类型" + key);
+                    break;
+
+            }
+        }
+
+
+        binaryWriterContent.Replace("${RECORD_PROPERTY_SETTER}", recordList.ToString());
+
+        File.WriteAllText(objPath + "/Scripts/Protobuf/BinaryWriter/" + excelData.tableName + "Writer.cs", binaryWriterContent.ToString());
+        #endregion
         XmlElement Attribute = xml.CreateElement("Attribute");//创建Attribute属性
         Attribute.SetAttribute("Name", "l_crc_code");
         Attribute.SetAttribute("Value", DateTime.Now.Ticks.ToString());
@@ -276,5 +375,16 @@ public class XlsxToXmlPanel : MonoBehaviour
         root.AppendChild(table);
         xml.AppendChild(root);
         xml.Save(tf1InputField.text + "/" + excelData.tableName + ".xml");
+    }
+
+    private string EveryHeadCharUpper(string str)
+    {
+        string res = "";
+        string[] strs = str.Split('_');
+        for(int i=0;i<strs.Length;i++)
+        {
+            res += strs[i][0].ToString().ToUpper() + strs[i].Substring(1);
+        }
+        return res;
     }
 }

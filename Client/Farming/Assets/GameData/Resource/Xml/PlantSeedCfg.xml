@@ -1,0 +1,13 @@
+<ExData>
+  <Table Name="PlantSeedCfg">
+    <ColumnList>
+      <Column Name="n_id" DataType="1" />
+      <Column Name="s_name" DataType="2" />
+      <Column Name="n_rarity" DataType="1" />
+      <Column Name="s_image" DataType="2" />
+      <Column Name="s_des" DataType="2" />
+      <Column Name="n_plantid" DataType="1" />
+    </ColumnList>
+    <Attribute Name="l_crc_code" Value="637493250013454354" DataType="4" />
+  </Table>
+</ExData>

@@ -1,0 +1,14 @@
+<ExData>
+  <Table Name="PlantCfg">
+    <ColumnList>
+      <Column Name="n_id" DataType="1" />
+      <Column Name="s_name" DataType="2" />
+      <Column Name="n_rarity" DataType="1" />
+      <Column Name="s_model" DataType="2" />
+      <Column Name="n_times" DataType="1" />
+      <Column Name="n_property" DataType="1" />
+      <Column Name="s_des" DataType="2" />
+    </ColumnList>
+    <Attribute Name="l_crc_code" Value="637493250012836001" DataType="4" />
+  </Table>
+</ExData>
