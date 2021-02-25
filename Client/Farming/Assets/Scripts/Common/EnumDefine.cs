@@ -51,12 +51,12 @@ public enum RoleState
 /// </summary>
 public enum RoleAnimatorName
 {
-    Idle_Normal,
-    Idle_Fight,
+    Idle,
+    FishIdle,
     Walk,
     Run,
     Hurt,
-    Die,
+    DeathForward,
     Attack,
 }
 
@@ -66,14 +66,15 @@ public enum RoleAnimatorName
 /// </summary>
 public enum ToAnimatorCondition
 {
-    ToIdleNormal,
-    ToIdleFight,
+    ToIdle,
+    ToFishIdle,
     ToWalk,
     ToRun,
     ToHurt,
-    ToDie,
+    ToDead,
     ToAttack,
     CurState,
+    Speed,
 }
 
 /// <summary>

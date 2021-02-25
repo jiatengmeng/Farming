@@ -34,7 +34,7 @@ public class CameraMgr : MonoBehaviour
     {
         if(Instance==null)
         {
-            Instance = new CameraMgr();
+            Instance = this;
         }
     }
 

@@ -10,6 +10,22 @@ public class RoleCtrl : MonoBehaviour
     public GameObject wheelPb;
     private Dictionary<Vector3,GameObject> builtObj = new Dictionary<Vector3, GameObject>();
     #endregion
+
+    /// <summary>
+    /// 走的速度
+    /// </summary>
+    public float WalkSpeed = 4.0f;
+
+    /// <summary>
+    /// 跑速度
+    /// </summary>
+    public float RunSpeed = 8.0f;
+
+    /// <summary>
+    /// 移动方向
+    /// </summary>
+    public Vector3 CurDirection { get; set; }
+
     /// <summary>
     /// 动画
     /// </summary>
@@ -35,10 +51,16 @@ public class RoleCtrl : MonoBehaviour
     /// </summary>
     public RoleFSMMgr CurRoleFSMMgr = null;
 
+    /// <summary>
+    /// 角色控制器
+    /// </summary>
+    public CharacterController CurCharacterController { get; internal set; }
+
     // Start is called before the first frame update
     void Start()
     {
-
+        CurCharacterController = this.GetComponent<CharacterController>();
+        CurDirection = Vector3.zero;
         CurRoleFSMMgr = new RoleFSMMgr(this);
     }
 
@@ -50,10 +72,23 @@ public class RoleCtrl : MonoBehaviour
             Rect rt = new Rect(0,0,Screen.width,Screen.height);
             CameraMgr.Instance.CaptureCamera(Camera.main, rt);
         }
+        CurDirection = (Input.GetAxis("Horizontal") * Vector3.right + Input.GetAxis("Vertical") * Vector3.forward).normalized;
+        if (CurDirection != Vector3.zero)
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                ToRun();
+            }
+            else
+            {
+                ToWalk();
+            }
+        }
+        CameraAutoFollow();
         //BuildObject();
-        if (CurRoleAI == null) return;
-        CurRoleAI.DoAI();
-        if(CurRoleFSMMgr!=null)
+        //if (CurRoleAI == null) return;
+        //CurRoleAI.DoAI();
+        if (CurRoleFSMMgr!=null)
         {
             CurRoleFSMMgr.OnUpdate();
         }
