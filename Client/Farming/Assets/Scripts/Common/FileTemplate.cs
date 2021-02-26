@@ -74,4 +74,6 @@ ${RECORD_PROPERTY_SETTER}
     }
 }
 ";
+
+    public string PanelTemplate = "";
 }
